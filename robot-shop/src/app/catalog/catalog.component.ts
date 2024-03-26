@@ -1,13 +1,15 @@
 import {Component} from '@angular/core';
 import {IProduct} from "./product.model";
 import {CurrencyPipe} from "@angular/common";
+import {ProductComponent} from "../product/product.component";
 
 @Component({
   selector: 'bot-catalog',
   templateUrl: './catalog.component.html',
   styleUrls: ['./catalog.component.css'],
   imports: [
-    CurrencyPipe
+    CurrencyPipe,
+    ProductComponent
   ],
   standalone: true
 })
@@ -191,10 +193,6 @@ export class CatalogComponent {
         discount: 0,
       },
     ];
-  }
-
-  getImageUrl(product: IProduct) {
-    return '/assets/images/robot-parts/' + product.imageName
   }
 
   getFilteredProducts() {

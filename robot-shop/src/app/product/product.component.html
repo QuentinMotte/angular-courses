@@ -9,12 +9,15 @@
       </div>
     </div>
     <div class="price">
+      <div
+        [ngClass]="getDiscountedClass(product)"
+      >
+        {{ product.price | currency }}
+      </div>
       @if (product.discount > 0) {
         <div class="discount">{{ (product.price * (1 - product.discount)) | currency }}</div>
-      } @else {
-        <div>{{ product.price | currency}}</div>
       }
-      <button class="cta">Buy</button>
+      <button class="cta" (click)="onBuy(product)">Buy</button>
     </div>
   </div>
 </li>

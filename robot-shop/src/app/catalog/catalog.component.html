@@ -9,7 +9,7 @@
 
   <ul class="products">
     @for (product of getFilteredProducts(); track product.id) {
-      <bot-product [product]="product"></bot-product>
+      <bot-product (buyProduct)="addToCart($event)" [product]="product"></bot-product>
     } @empty {
       <div class="no-products">No products currently available</div>
     }

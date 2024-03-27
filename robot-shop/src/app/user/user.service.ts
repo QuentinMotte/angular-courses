@@ -1,17 +1,16 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject, map, Observable} from 'rxjs';
 
-import { IUser, IUserCredentials } from './user.model';
+import {IUser, IUserCredentials} from './user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private user: BehaviorSubject<IUser | null>;
+  private user = new BehaviorSubject<IUser | null>(null);
 
   constructor(private http: HttpClient) {
-    this.user = new BehaviorSubject<IUser | null>(null);
   }
 
   getUser(): Observable<IUser | null> {

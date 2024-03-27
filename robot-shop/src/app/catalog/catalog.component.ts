@@ -4,7 +4,7 @@ import {CurrencyPipe} from "@angular/common";
 import {ProductComponent} from "../product/product.component";
 import {ProductService} from "./product.service";
 import {CartService} from "../cart/cart.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink, RouterLinkActive} from "@angular/router";
 
 @Component({
   selector: 'bot-catalog',
@@ -12,7 +12,9 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrls: ['./catalog.component.css'],
   imports: [
     CurrencyPipe,
-    ProductComponent
+    ProductComponent,
+    RouterLink,
+    RouterLinkActive
   ],
   standalone: true
 })
@@ -32,14 +34,14 @@ export class CatalogComponent implements OnInit {
     this.productSvc.getProducts().subscribe(products => {
       this.products = products;
     })
-    this.route.params.subscribe(params => {
-      this.filter = params['filter'];
+    this.route.queryParams.subscribe(params => {
+      this.filter = params['filter'] ?? '';
     });
   }
 
   addToCart(product: IProduct) {
     this.cartSvc.add(product);
-    this.router.navigate(['/cart', product.id]);
+    this.router.navigate(['/cart']);
   }
 
   getFilteredProducts() {

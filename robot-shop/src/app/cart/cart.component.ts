@@ -1,19 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { IProduct } from '../catalog/product.model';
-import { CartService } from './cart.service';
+import {Component, OnInit} from '@angular/core';
+import {IProduct} from '../catalog/product.model';
+import {CartService} from './cart.service';
+import {CurrencyPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 
 @Component({
   selector: 'bot-cart',
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
+  imports: [
+    CurrencyPipe,
+    NgClass,
+    NgIf,
+    NgForOf
+  ],
+  standalone: true
 })
 export class CartComponent implements OnInit {
   private cart: IProduct[] = [];
-  constructor(private cartService: CartService) { }
+
+  constructor(private cartService: CartService) {
+  }
 
   ngOnInit() {
-    this.cartService.getCart().subscribe({
-      next: (cart) => (this.cart = cart),
+    this.cartService.getCart().subscribe(cart =>{
+      this.cart = cart;
+      console.log('cart', this.cart)
     });
   }
 
@@ -22,7 +33,7 @@ export class CartComponent implements OnInit {
   }
 
   get cartTotal() {
-    return this.cart.reduce((prev, next) => {
+    return this.cart?.reduce((prev, next) => {
       let discount = next.discount && next.discount > 0 ? 1 - next.discount : 1;
       return prev + next.price * discount;
     }, 0);

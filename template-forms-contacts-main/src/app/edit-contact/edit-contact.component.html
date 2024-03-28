@@ -7,9 +7,37 @@
       <nav>Name/Info</nav>
       <div>
         <input hidden [ngModel]="contact.id" name="id"/>
-        <input [(ngModel)]="contact.firstName" placeholder="First Name" name="firstName"/>
-        <input [(ngModel)]="contact.lastName" placeholder="Last Name" name="lastName"/>
-        <input [(ngModel)]="contact.dateOfBirth" placeholder="Date of Birth" name="dateOfBirth" type="date"/>
+        <input
+          [(ngModel)]="contact.firstName"
+          placeholder="First Name"
+          required
+          minlength="3"
+          #firstName="ngModel"
+          name="firstName"
+          [class.error]="firstName.invalid && (firstName.dirty || firstName.touched)"
+        />
+        @if (firstName.errors?.['required'] && (firstName.dirty || firstName.touched)) {
+          <em>Please enter a First Name</em>
+        }
+        @if (firstName.errors?.['minlength'] && (firstName.dirty || firstName.touched)) {
+          <em>Please enter a First Name of at least three characters</em>
+        }
+        <input
+          [(ngModel)]="contact.lastName"
+          placeholder="Last Name"
+          required
+          #lastName="ngModel"
+          name="lastName"
+          [class.error]="lastName.invalid && (lastName.dirty || lastName.touched)"
+        />
+        @if (lastName.invalid && (lastName.dirty || lastName.touched)) {
+          <em>Please enter a Last Name</em>
+        }
+        <input [(ngModel)]="contact.dateOfBirth" placeholder="Date of Birth" name="dateOfBirth" required
+               #dateOfBirth="ngModel" type="date"/>
+        @if (dateOfBirth.invalid && (dateOfBirth.dirty || dateOfBirth.touched)) {
+          <em>Please enter a Date of Birth</em>
+        }
         <div>
           <span>Favorites Ranking:</span>
           <input type="range" min="0" max="5" [(ngModel)]="contact.favoritesRanking" placeholder="Favorites Ranking"
@@ -39,20 +67,24 @@
     <section>
       <nav>Address</nav>
       <div>
-        <div class="address" ngModelGroup="address">
+        <div class="address" ngModelGroup="address" #addressGroup="ngModelGroup"
+             [class.error]="(addressGroup.invalid && (addressGroup.dirty || addressGroup.touched))">
           <div class="flex-group">
-            <input [(ngModel)]="contact.address.streetAddress" placeholder="Address" name="streetAddress"/>
+            <input [(ngModel)]="contact.address.streetAddress" placeholder="Address" name="streetAddress" required/>
             <img src="/assets/plus-grey-blue.png" class="add"/>
           </div>
-          <input [(ngModel)]="contact.address.city" placeholder="City" name="city"/>
-          <input [(ngModel)]="contact.address.state" placeholder="State/Region" name="state"/>
-          <input [(ngModel)]="contact.address.postalCode" placeholder="Zip/Postal Code" name="postalCode"/>
-          <select [(ngModel)]="contact.address.addressType" name="addressType">
+          <input [(ngModel)]="contact.address.city" placeholder="City" name="city" required/>
+          <input [(ngModel)]="contact.address.state" placeholder="State/Region" name="state" required/>
+          <input [(ngModel)]="contact.address.postalCode" placeholder="Zip/Postal Code" name="postalCode" required/>
+          <select [(ngModel)]="contact.address.addressType" name="addressType" required>
             @for (addressType of addressTypes; track $index) {
               <option [value]="addressType.value" name="addressType"> {{ addressType.title }}
                 }
           </select>
         </div>
+        @if (addressGroup.invalid && (addressGroup.dirty || addressGroup.touched)) {
+          <em>Incomplete Address</em>
+        }
       </div>
     </section>
     <section>
@@ -67,7 +99,7 @@
         <button disabled type="submit">Saving...</button>
       } @else {
         <button class="secondary" type="button">Cancel</button>
-        <button class="primary" type="submit">Save</button>
+        <button class="primary" [disabled]="contactForm.invalid" type="submit">Save</button>
       }
     </div>
   </form>

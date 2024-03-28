@@ -3,6 +3,7 @@ import {IUserCredentials} from "../user.model";
 import {FormsModule} from "@angular/forms";
 import {UserService} from "../user.service";
 import {Router} from "@angular/router";
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Component({
   selector: 'bot-sign-in',
@@ -18,13 +19,16 @@ export class SignInComponent {
     email: '',
     password: ''
   }
+  signInError: boolean = false;
 
   constructor(private userSvc : UserService,private router: Router) {
   }
 
   signIn() {
-    this.userSvc.signIn(this.credentials).subscribe(() => {
-      this.router.navigate(['/catalog']);
+    this.signInError = false;
+    this.userSvc.signIn(this.credentials).subscribe({
+      next:() =>  this.router.navigate(['/catalog']),
+      error: () => this.signInError = true
     })
   }
 

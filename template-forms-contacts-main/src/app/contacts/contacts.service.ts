@@ -13,6 +13,10 @@ export class ContactsService {
 
   getContact(id: string): Observable<Contact | undefined> {
     return this.http.get<Contact>(`api/contacts/${id}`)
+      .pipe(map(contact => {
+        const dateOfBirth = contact.dateOfBirth ? new Date(contact.dateOfBirth) : new Date();
+        return {...contact, dateOfBirth}
+      }))
 
   }
 

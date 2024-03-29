@@ -6,6 +6,7 @@
     <section>
       <nav>Name/Info</nav>
       <div>
+        <con-profile-icon-selector [(ngModel)]="contact.icon" name="icon" />
         <input hidden [ngModel]="contact.id" name="id"/>
         <input
           [(ngModel)]="contact.firstName"
@@ -90,7 +91,10 @@
     <section>
       <nav>Notes</nav>
       <div>
-        <textarea [(ngModel)]="contact.notes" rows="3" placeholder="Notes" name="notes"></textarea>
+        <textarea [class.error]="notes.invalid" [(ngModel)]="contact.notes" rows="3" placeholder="Notes"
+                  [restrictedWords]="['foo','bar']" name="notes" #notes="ngModel"></textarea>
+        <em *ngIf="notes.errors?.['restrictedWords']">Restricted words
+          found: {{ notes.errors?.['restrictedWords'] }}</em>
       </div>
     </section>
 

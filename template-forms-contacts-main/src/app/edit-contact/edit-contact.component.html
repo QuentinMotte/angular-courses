@@ -6,7 +6,7 @@
     <section>
       <nav>Name/Info</nav>
       <div>
-        <con-profile-icon-selector [(ngModel)]="contact.icon" name="icon" />
+        <con-profile-icon-selector [(ngModel)]="contact.icon" name="icon"/>
         <input hidden [ngModel]="contact.id" name="id"/>
         <input
           [(ngModel)]="contact.firstName"
@@ -51,18 +51,22 @@
       </div>
     </section>
     <section>
-      <nav>Phone</nav>
-      <div class="flex-column" ngModelGroup="phone">
-        <div class="flex-group">
-          <input [(ngModel)]="contact.phone.phoneNumber" placeholder="Phone" name="phoneNumber"/>
-          <img src="/assets/plus-grey-blue.png" class="add"/>
-        </div>
-        <div class="radio">
-          @for (phoneType of phoneTypes; track $index) {
-            <input [(ngModel)]="contact.phone.phoneType" type="radio" [value]="phoneType.value"
-                   name="phoneType"> {{ phoneType.title }}
-          }
-        </div>
+      <nav>Phones</nav>
+      <div class="flex-column" ngModelGroup="phones">
+        @for (phone of contact.phones; let i = $index; track i) {
+          <div class="flex-column">
+            <div class="flex-group">
+              <input [(ngModel)]="phone.phoneNumber" placeholder="Phone" name="phoneNumber{{i}}"/>
+              <img src="/assets/plus-grey-blue.png" (click)="addPhone()" class="add"/>
+            </div>
+            <div class="radio">
+              @for (phoneType of phoneTypes; track $index) {
+                <input [(ngModel)]="phone.phoneType" type="radio" [value]="phoneType.value"
+                       name="phoneType{{i}}"/> {{ phoneType.title }}
+              }
+            </div>
+          </div>
+        }
       </div>
     </section>
     <section>

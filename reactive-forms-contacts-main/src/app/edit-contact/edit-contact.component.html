@@ -6,22 +6,37 @@
     <section>
       <nav>Name/Info</nav>
       <div>
-        <input formControlName="firstName" placeholder="First Name" />
-        <input formControlName="lastName" placeholder="Last Name" />
-        <input formControlName="dateOfBirth" placeholder="Date of Birth" />
-        <input formControlName="favoritesRanking" placeholder="Favorites Ranking" />
+        <input formControlName="firstName" [class.error]="firstName.invalid && firstName.touched" required
+               placeholder="First Name"/>
+        @if (firstName.hasError('required') && firstName.touched) {
+          <em>First Name is required</em>
+        }
+        @if (firstName.hasError('minlength') && firstName.touched) {
+          <em>First Name must be at least 2 characters long</em>
+        }
+
+        <input formControlName="lastName" placeholder="Last Name"/>
+        <input formControlName="dateOfBirth" type="date" placeholder="Date of Birth"/>
+        <div>
+          <span>Favorites Ranking:</span>
+          <input type="range" min="0" max="5" formControlName="favoritesRanking"
+          /><span>{{ contactForm.controls.favoritesRanking.value }}</span>
+        </div>
+        <div>
+          <input formControlName="personal" type="checkbox"/> Personal
+        </div>
       </div>
     </section>
     <section>
       <nav>Phone</nav>
       <div class="flex-column" formGroupName="phone">
         <div class="flex-group">
-          <input formControlName="phoneNumber" placeholder="Phone" />
-          <img src="/assets/plus-grey-blue.png" class="add" />
+          <input formControlName="phoneNumber" placeholder="Phone"/>
+          <img src="/assets/plus-grey-blue.png" class="add"/>
         </div>
         <div class="radio">
-          @for (phoneType of phoneTypes; track $index){
-          <input formControlName="phoneType" type="radio" value="{{phoneType.value}}"> {{phoneType.title}}
+          @for (phoneType of phoneTypes; track $index) {
+            <input formControlName="phoneType" type="radio" value="{{phoneType.value}}"> {{ phoneType.title }}
           }
         </div>
       </div>
@@ -29,26 +44,40 @@
     <section>
       <nav>Address</nav>
       <div>
-        <div class="address" formGroupName="address">
+        <div [class.error]="address.invalid && address.dirty" class="address" formGroupName="address">
           <div class="flex-group">
-            <input placeholder="Address" formControlName="streetAddress" />
-            <img src="/assets/plus-grey-blue.png" class="add" />
+            <input placeholder="Address" formControlName="streetAddress"/>
+            <img src="/assets/plus-grey-blue.png" class="add" alt="plus"/>
           </div>
-          <input placeholder="City" formControlName="city" />
-          <input placeholder="State/Region" formControlName="state" />
-          <input placeholder="Zip/Postal Code" formControlName="postalCode" />
+          <input placeholder="City" formControlName="city"/>
+          <input placeholder="State/Region" formControlName="state"/>
+          <input placeholder="Zip/Postal Code" formControlName="postalCode"/>
           <select formControlName="addressType">
-            @for (addressType of addressTypes; track $index){
-            <option value="{{addressType.value}}">{{addressType.title}}</option>
+            @for (addressType of addressTypes; track $index) {
+              <option value="{{addressType.value}}">{{ addressType.title }}</option>
             }
 
           </select>
         </div>
+        @if (address.invalid && address.dirty) {
+          <em>Incomplete Address</em>
+        }
       </div>
     </section>
+    <section>
+      <nav>Notes</nav>
+      <div>
+        <textarea formControlName="notes" placeholder="Notes"></textarea>
+        @if (notes.invalid && notes.dirty) {
+          <em>
+            Restricted words: {{ notes.errors?.["restrictedWords"] }}
+          </em>
+        }
+      </div>
+    </section>
+    <div class="buttons">
+      <button class="secondary" type="button">Cancel</button>
+      <button class="primary" type="submit" [disabled]="contactForm.invalid">Save</button>
+    </div>
   </form>
-  <div class="buttons">
-    <button class="secondary" type="button">Cancel</button>
-    <button class="primary" type="submit">Save</button>
-  </div>
 </div>

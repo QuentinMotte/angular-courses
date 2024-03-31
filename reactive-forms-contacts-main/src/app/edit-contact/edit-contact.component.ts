@@ -1,9 +1,10 @@
 import {CommonModule} from '@angular/common';
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ContactsService} from "../contacts/contacts.service";
 import {addressTypesValues, phoneTypesValues} from "../contacts/contact.model";
+import {restrictedWords} from "../validators/restricted-words.validators";
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule],
@@ -17,7 +18,8 @@ export class EditContactComponent implements OnInit {
 
   contactForm = this.fb.nonNullable.group({
     id: '',
-    firstName: '',
+    personal: false,
+    firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
     lastName: '',
     dateOfBirth: <Date | null>null,
     favoritesRanking: <number | null>null,
@@ -26,12 +28,13 @@ export class EditContactComponent implements OnInit {
       phoneType: ''
     }),
     address: this.fb.nonNullable.group({
-      streetAddress: '',
-      city: '',
-      state: '',
-      postalCode: '',
+      streetAddress: ['',Validators.required],
+      city: ['',Validators.required],
+      state: ['',Validators.required],
+      postalCode: ['',Validators.required],
       addressType: ''
     }),
+    notes: ['', restrictedWords(['foo', 'bar'])]
   })
 
 
@@ -56,7 +59,21 @@ export class EditContactComponent implements OnInit {
     )
   }
 
+  get firstName() {
+    return this.contactForm.controls.firstName
+  }
+
+  get address() {
+    return this.contactForm.controls.address
+  }
+
+  get notes() {
+    return this.contactForm.controls.notes
+
+  }
+
   saveContact() {
+
     this.contactsSvc.saveContact(this.contactForm.getRawValue()).subscribe(
       () => this.router.navigate(['/contacts'])
     )

@@ -6,6 +6,7 @@ export class InMemoryContactsApi implements InMemoryDbService {
     let contacts: Contact[] = [
       {
         id: '5CehW',
+        personal: true,
         firstName: 'Percival',
         lastName: 'Doodleplumb',
         dateOfBirth: new Date('1994/05/05'),
@@ -18,9 +19,11 @@ export class InMemoryContactsApi implements InMemoryDbService {
           postalCode: 'A4321',
           addressType: 'home'
         },
+        notes: 'Percival is a professional balloon artist.'
       },
       {
         id: 'A6rwe',
+        personal: true,
         firstName: 'Mortimer',
         lastName: 'Flungford',
         dateOfBirth: new Date('1988/10/05'),
@@ -33,9 +36,11 @@ export class InMemoryContactsApi implements InMemoryDbService {
           postalCode: 'F2231',
           addressType: 'other'
         },
+        notes: 'Mortimer is allergic to peanuts.'
       },
       {
         id: '3bNGA',
+        personal: false,
         firstName: 'Wanda',
         lastName: 'Giggleworth',
         dateOfBirth: new Date('1986/11/08'),
@@ -48,6 +53,7 @@ export class InMemoryContactsApi implements InMemoryDbService {
           postalCode: 'Z2345',
           addressType: 'work'
         },
+        notes: 'Wanda is a professional clown.'
       },
     ]
 

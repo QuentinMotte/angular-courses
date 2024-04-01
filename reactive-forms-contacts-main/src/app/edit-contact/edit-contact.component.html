@@ -6,6 +6,7 @@
     <section>
       <nav>Name/Info</nav>
       <div>
+        <con-profile-icon-selector formControlName="icon"></con-profile-icon-selector>
         <input formControlName="firstName" [class.error]="firstName.invalid && firstName.touched" required
                placeholder="First Name"/>
         @if (firstName.hasError('required') && firstName.touched) {
@@ -16,7 +17,12 @@
         }
 
         <input formControlName="lastName" placeholder="Last Name"/>
-        <input formControlName="dateOfBirth" type="date" placeholder="Date of Birth"/>
+        <input
+          formControlName="dateOfBirth"
+          type="date"
+          placeholder="Date of Birth"
+
+        />
         <div>
           <span>Favorites Ranking:</span>
           <input type="range" min="0" max="5" formControlName="favoritesRanking"
@@ -28,17 +34,31 @@
       </div>
     </section>
     <section>
-      <nav>Phone</nav>
-      <div class="flex-column" formGroupName="phone">
-        <div class="flex-group">
-          <input formControlName="phoneNumber" placeholder="Phone"/>
-          <img src="/assets/plus-grey-blue.png" class="add"/>
-        </div>
-        <div class="radio">
-          @for (phoneType of phoneTypes; track $index) {
-            <input formControlName="phoneType" type="radio" value="{{phoneType.value}}"> {{ phoneType.title }}
-          }
-        </div>
+      <nav>Phones</nav>
+      <div formArrayName="phones">
+        @for (phone of phones; let i = $index; track i) {
+          <div [formGroupName]="i" class="flex-column">
+            <div class="flex-group">
+              <input formControlName="phoneNumber" placeholder="Phone"/>
+              <img src="/assets/plus-grey-blue.png" class="add" (click)="addPhone()"/>
+            </div>
+            @if (phone.controls.phoneNumber.invalid && phone.dirty) {
+              <em>
+                Phone is required
+              </em>
+            }
+
+            <div class="radio">
+              @for (phoneType of phoneTypes; track $index) {
+                <input formControlName="phoneType" type="radio"
+                       value="{{phoneType.value}}"> {{ phoneType.title }}
+              }
+            </div>
+            <span>
+              <input formControlName="preferred" type="checkbox"> Preferred
+            </span>
+          </div>
+        }
       </div>
     </section>
     <section>

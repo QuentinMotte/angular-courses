@@ -5,9 +5,11 @@ import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ContactsService} from "../contacts/contacts.service";
 import {addressTypesValues, phoneTypesValues} from "../contacts/contact.model";
 import {restrictedWords} from "../validators/restricted-words.validators";
+import {DateValueAccessorDirective} from "../date-value-accessor/date-value-accessor.directive";
+import {ProfileIconSelectorComponent} from "../profile-icon-selector/profile-icon-selector.component";
 
 @Component({
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DateValueAccessorDirective, ProfileIconSelectorComponent],
   standalone: true,
   templateUrl: './edit-contact.component.html',
   styleUrls: ['./edit-contact.component.css']
@@ -17,21 +19,19 @@ export class EditContactComponent implements OnInit {
   addressTypes = addressTypesValues
 
   contactForm = this.fb.nonNullable.group({
+    icon: '',
     id: '',
     personal: false,
     firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
     lastName: '',
     dateOfBirth: <Date | null>null,
     favoritesRanking: <number | null>null,
-    phone: this.fb.nonNullable.group({
-      phoneNumber: '',
-      phoneType: ''
-    }),
+    phones: this.fb.array([this.createPhoneGroup()]),
     address: this.fb.nonNullable.group({
-      streetAddress: ['',Validators.required],
-      city: ['',Validators.required],
-      state: ['',Validators.required],
-      postalCode: ['',Validators.required],
+      streetAddress: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      postalCode: ['', Validators.required],
       addressType: ''
     }),
     notes: ['', restrictedWords(['foo', 'bar'])]
@@ -54,13 +54,46 @@ export class EditContactComponent implements OnInit {
       contact => {
         if (!contact) return;
 
+        for (let i = 1; i < contact.phones.length; i++) {
+          this.addPhone()
+        }
         this.contactForm.setValue(contact)
       }
     )
   }
 
+  createPhoneGroup() {
+    const phoneGroup = this.fb.nonNullable.group({
+      phoneNumber: '',
+      phoneType: '',
+      preferred: false
+    })
+
+    phoneGroup.controls.preferred.valueChanges.subscribe(
+      (preferred: boolean) => {
+        if (preferred) {
+          this.phones.forEach(phone => {
+            if (phone !== phoneGroup) {
+              phone.controls.preferred.setValue(false)
+            }
+          })
+        }
+      }
+    )
+
+    return phoneGroup
+  }
+
+  addPhone() {
+    this.contactForm.controls.phones.push(this.createPhoneGroup())
+  }
+
   get firstName() {
     return this.contactForm.controls.firstName
+  }
+
+  get phones() {
+    return this.contactForm.controls.phones.controls
   }
 
   get address() {
@@ -69,7 +102,6 @@ export class EditContactComponent implements OnInit {
 
   get notes() {
     return this.contactForm.controls.notes
-
   }
 
   saveContact() {

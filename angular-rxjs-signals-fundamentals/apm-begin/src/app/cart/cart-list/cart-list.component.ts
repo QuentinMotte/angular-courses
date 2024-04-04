@@ -11,7 +11,7 @@ import {CartService} from "../cart.service";
   templateUrl: 'cart-list.component.html'
 })
 export class CartListComponent {
-  cartService = inject(CartService);
+  private cartService = inject(CartService);
   pageTitle = 'Cart';
 
   cartItems = this.cartService.cartItems;

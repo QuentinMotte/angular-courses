@@ -1,4 +1,4 @@
-import {Component, inject, Input} from '@angular/core';
+import {Component, computed, inject, Input, signal} from '@angular/core';
 import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -14,20 +14,24 @@ import {CartService} from "../cart.service";
 export class CartItemComponent {
   cartService = inject(CartService);
 
-  @Input({ required: true }) cartItem!: CartItem;
+  @Input({ required: true }) set cartItem(value: CartItem) {
+    this.item.set(value);
+  }
+
+  item = signal<CartItem>(undefined!);
 
   // Quantity available (hard-coded to 8)
   // Mapped to an array from 1-8
   qtyArr = [...Array(8).keys()].map(x => x + 1);
 
   // Calculate the extended price
-  exPrice = this.cartItem?.quantity * this.cartItem?.product.price;
+  exPrice = computed(() => this.item()?.quantity * this.item()?.product.price);
 
   onQuantitySelected(quantity: number): void {
-     this.cartService.onQuantitySelected(this.cartItem.product, quantity);
+     this.cartService.onQuantitySelected(this.item().product, Number(quantity));
   }
 
   removeFromCart(): void {
-    this.cartService.removeFromCart(this.cartItem.product);
+    this.cartService.removeFromCart(this.item().product);
   }
 }

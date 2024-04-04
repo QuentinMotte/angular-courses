@@ -14,14 +14,9 @@ import {catchError, EMPTY} from "rxjs";
 export class ProductListComponent {
   private productService = inject(ProductService);
   pageTitle = 'Products';
-  errorMessage = '';
-  products$ = this.productService.products$.pipe(
-    catchError(err => {
-      this.errorMessage = err
-      return EMPTY
-    })
-  );
-  readonly selectedProductId$ = this.productService.productSelected$
+  errorMessage = this.productService.productsError;
+  products = this.productService.products
+  readonly selectedProductId = this.productService.selectedProductId
 
   onSelected(productId: number): void {
     this.productService.productSelected(productId);

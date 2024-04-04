@@ -11,5 +11,5 @@ import {CatalogComponent} from "./catalog/catalog.component";
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'robot-shop';
+  title = 'robot-shop-angular-fundamentals';
 }
